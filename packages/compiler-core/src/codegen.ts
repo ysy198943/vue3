@@ -233,6 +233,7 @@ function createCodegenContext(
   return context
 }
 
+// 解读：最终生成函数
 export function generate(
   ast: RootNode,
   options: CodegenOptions & {

@@ -1017,7 +1017,7 @@ function reset() {
   currentAttrEndIndex = -1
   stack.length = 0
 }
-
+// 解读: 构建AST
 export function baseParse(input: string, options?: ParserOptions): RootNode {
   reset()
   currentInput = input

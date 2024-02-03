@@ -253,6 +253,7 @@ function createReactiveObject(
   }
   // target is already a Proxy, return it.
   // exception: calling readonly() on a reactive object
+  // 解读：做响应式标志，避免重复响应式
   if (
     target[ReactiveFlags.RAW] &&
     !(isReadonly && target[ReactiveFlags.IS_REACTIVE])
@@ -260,6 +261,7 @@ function createReactiveObject(
     return target
   }
   // target already has corresponding Proxy
+  // 解读：proxyMap以map的形式进行缓存
   const existingProxy = proxyMap.get(target)
   if (existingProxy) {
     return existingProxy
@@ -269,6 +271,7 @@ function createReactiveObject(
   if (targetType === TargetType.INVALID) {
     return target
   }
+  // 解读：用Proxy去劫持代理对象
   const proxy = new Proxy(
     target,
     targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers,

@@ -44,6 +44,7 @@ type RefBase<T> = {
   value: T
 }
 
+// 解读：调起收集依赖
 export function trackRefValue(ref: RefBase<any>) {
   if (shouldTrack && activeEffect) {
     ref = toRaw(ref)
@@ -64,7 +65,7 @@ export function trackRefValue(ref: RefBase<any>) {
     )
   }
 }
-
+// 解读：调用往下更新渲染
 export function triggerRefValue(
   ref: RefBase<any>,
   dirtyLevel: DirtyLevels = DirtyLevels.Dirty,
@@ -100,6 +101,7 @@ export function isRef(r: any): r is Ref {
 }
 
 /**
+ * ref本体
  * Takes an inner value and returns a reactive and mutable ref object, which
  * has a single property `.value` that points to the inner value.
  *
@@ -145,6 +147,7 @@ export function shallowRef(value?: unknown) {
   return createRef(value, true)
 }
 
+// 解读：创建ref
 function createRef(rawValue: unknown, shallow: boolean) {
   if (isRef(rawValue)) {
     return rawValue
@@ -152,6 +155,7 @@ function createRef(rawValue: unknown, shallow: boolean) {
   return new RefImpl(rawValue, shallow)
 }
 
+// 解读：标准的代理模式
 class RefImpl<T> {
   private _value: T
   private _rawValue: T
@@ -167,15 +171,17 @@ class RefImpl<T> {
     this._value = __v_isShallow ? value : toReactive(value)
   }
 
+  // 取值
   get value() {
     trackRefValue(this)
     return this._value
   }
-
   set value(newVal) {
+    // 赋值
     const useDirectValue =
       this.__v_isShallow || isShallow(newVal) || isReadonly(newVal)
     newVal = useDirectValue ? newVal : toRaw(newVal)
+    // 值是否发生改变 -- 性能优化
     if (hasChanged(newVal, this._rawValue)) {
       this._rawValue = newVal
       this._value = useDirectValue ? newVal : toReactive(newVal)

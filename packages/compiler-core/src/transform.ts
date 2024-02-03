@@ -435,6 +435,7 @@ export function traverseNode(
   }
 
   switch (node.type) {
+    // 注释节点
     case NodeTypes.COMMENT:
       if (!context.ssr) {
         // inject import for the Comment symbol, which is needed for creating

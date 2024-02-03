@@ -23,6 +23,7 @@ export type DebuggerEventExtraInfo = {
   oldTarget?: Map<any, any> | Set<any>
 }
 
+// 记录当前Effect
 export let activeEffect: ReactiveEffect | undefined
 
 export class ReactiveEffect<T = any> {
@@ -177,6 +178,8 @@ export interface ReactiveEffectRunner<T = any> {
 }
 
 /**
+ * 解读：副作用函数的核心主题
+ * 副作用函数对上收集依赖，对下触发渲染
  * Registers the given function to track reactive updates.
  *
  * The given function will be run once immediately. Every time any reactive
@@ -203,6 +206,7 @@ export function effect<T = any>(
     extend(_effect, options)
     if (options.scope) recordEffectScope(_effect, options.scope)
   }
+  // 解读：执行调用
   if (!options || !options.lazy) {
     _effect.run()
   }
@@ -260,6 +264,7 @@ export function resetScheduling() {
   }
 }
 
+// 解读：变量的依赖收集
 export function trackEffect(
   effect: ReactiveEffect,
   dep: Dep,
@@ -283,7 +288,7 @@ export function trackEffect(
 }
 
 const queueEffectSchedulers: EffectScheduler[] = []
-
+// 解读：链式派发更新 -- 递归
 export function triggerEffects(
   dep: Dep,
   dirtyLevel: DirtyLevels,

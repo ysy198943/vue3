@@ -89,6 +89,7 @@ export function baseCompile(
   const resolvedOptions = extend({}, options, {
     prefixIdentifiers,
   })
+  // 解读：template 转成AST
   const ast = isString(source) ? baseParse(source, resolvedOptions) : source
   const [nodeTransforms, directiveTransforms] =
     getBaseTransformPreset(prefixIdentifiers)
@@ -100,6 +101,7 @@ export function baseCompile(
     }
   }
 
+  // 解读：node节点打标签
   transform(
     ast,
     extend({}, resolvedOptions, {
@@ -115,5 +117,6 @@ export function baseCompile(
     }),
   )
 
+  // 解读：生成render函数
   return generate(ast, resolvedOptions)
 }
